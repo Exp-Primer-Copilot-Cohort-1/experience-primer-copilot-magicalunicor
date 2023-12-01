@@ -22,5 +22,4 @@ var server = http.createServer(function(req, res){
         var fileStream = fs.createReadStream(cssPath);
         res.writeHead(200, {"Content-Type": "text/css"});
         fileStream.pipe(res);
-    } else if(req.url === "/comments"){
-        var comments = [
+    }});
