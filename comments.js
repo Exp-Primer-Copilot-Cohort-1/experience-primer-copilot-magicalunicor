@@ -1,25 +1,29 @@
-// create web server
-// handle http request
-// read file
-// send response to client
-// listen to port
+//create web server
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const app = express();
+const { check, validationResult } = require('express-validator/check');
+const { matchedData, sanitize } = require('express-validator/filter');
 
-// load http module
-var http = require("http");
-var fs = require("fs");
+const port = 3000;
+const hostname = 'localhost';
 
-// create web server
-var server = http.createServer(function(req, res){
-    // console.log(req.url);
-    // load html file
-    if(req.url === "/"){
-        fs.readFile("./public/index.html", "UTF-8", function(err, body){
-            res.writeHead(200, {"Content-Type": "text/html"});
-            res.end(body);
-        });
-    } else if(req.url.match("/node_modules/")){
-        var cssPath = "." + req.url;
-        var fileStream = fs.createReadStream(cssPath);
-        res.writeHead(200, {"Content-Type": "text/css"});
-        fileStream.pipe(res);
-    }});
+//set up template engine
+app.set('view engine', 'ejs');
+
+//static files
+app.use(express.static('./public'));
+
+//use body-parser middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+
+//fire controllers
+const comments = require('./controllers/comments');
+comments(app);
+
+//listen to port
+app.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+});
